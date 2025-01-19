@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elections-programs
+  namespace: elections-programs
+spec:
+  type: ClusterIP
+  selector:
+    app: elections-programs
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
