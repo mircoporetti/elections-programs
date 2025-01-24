@@ -11,7 +11,11 @@ RUN apt-get update \
     && poetry install --no-root
 
 COPY src/ ./src
+COPY resources/manifests/ /app/resources/manifests/
+RUN mkdir -p /app/faiss
+
+ENV PYTHONPATH=/app/src
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "uvicorn", "src.webapp.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -10,5 +10,12 @@ Requirements:
 ```bash
 poetry init
 poetry install
-poetry run uvicorn src.main:app --reload
+poetry run uvicorn src.webapp.main:app --reload
+```
+
+### Run the tests with
+
+
+```bash
+poetry run pytest
 ```
