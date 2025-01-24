@@ -1,8 +1,17 @@
 from fastapi.testclient import TestClient
 
 from src.webapp.main import app
+import pytest
+
+from store import vector_store
 
 client = TestClient(app)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def init_vector_store():
+    vector_store.init_vector_store()
+    print("Vector store initialized")
 
 
 def tests_programs_chat_returns_chunked_docs():
