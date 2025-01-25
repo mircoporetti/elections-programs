@@ -1,27 +1,33 @@
+import logging
+
 from fastapi import FastAPI
 from pydantic import BaseModel
-
-from chat.ai_assistant import answer
+from completion import ai_assistant
 from store import vector_store
 
 app = FastAPI()
 
+logger = logging.getLogger("uvicorn")
+
 
 @app.on_event("startup")
 async def load_resources():
+    logger.info("Initializing Vector Store...")
     vector_store.init_vector_store()
+    logger.info("Vector Store has been initialized.")
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-class QueryRequest(BaseModel):
+class Prompt(BaseModel):
     query: str
 
 
-@app.post("/api/programs/chat")
-async def ask_about_parties_manifest(request: QueryRequest):
-    chunks = answer(request.query)
-    return {"chunks": chunks}
+@app.post("/api/chat/completion")
+async def answer_question(prompt: Prompt):
+    result = ai_assistant.answer(prompt.query)
+    return {"answer": result}
+
+
+@app.post("/api/chat/retrieve")
+async def retrieve_most_pertinent(prompt: Prompt):
+    result = ai_assistant.answer_with_most_pertinent_chunks(prompt.query)
+    return {"chunks": result}

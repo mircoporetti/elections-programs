@@ -1,16 +1,11 @@
 # Test your FastAPI endpoints
 
-GET http://127.0.0.1:8000/
-Accept: application/json
-
-###
-
-POST http://localhost:8000/api/programs/chat
+POST http://localhost:8000/api/chat/completion
 Accept: application/json
 Content-Type: application/json
 
 {
-    "query": "What CDU wants to do for illegal immigration??"
+  "query": "And what can you tell me about CDU ideas for private investors?"
 }
 
 ###
