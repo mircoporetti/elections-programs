@@ -14,7 +14,10 @@ COPY src/ ./src
 COPY resources/manifests/ /app/resources/manifests/
 RUN mkdir -p /app/faiss
 
+ARG HUGGINGFACEHUB_API_TOKEN
+ENV HUGGINGFACEHUB_API_TOKEN=$HUGGINGFACEHUB_API_TOKEN
 ENV PYTHONPATH=/app/src
+
 
 EXPOSE 8000
 
