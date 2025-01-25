@@ -1,0 +1,23 @@
+# Test your FastAPI endpoints
+
+POST {{host}}/api/chat/completion
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic {{basic_auth}}
+
+{
+  "query": "And what can you tell me about CDU ideas for private investors?"
+}
+
+###
+
+POST {{host}}/api/chat/retrieve
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic {{basic_auth}}
+
+{
+  "query": "And what can you tell me about CDU ideas for private investors?"
+}
+
+###

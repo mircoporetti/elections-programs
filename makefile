@@ -1,4 +1,4 @@
-# Ensure Poetry dependencies are installed and check the environment variable
+# Ensure Poetry dependencies are installed and check the environment variables
 check_env:
 	@echo "Ensuring Poetry dependencies are installed..."
 	@poetry install
@@ -7,6 +7,14 @@ check_env:
 		export $$(cat .env | xargs); \
 		if [ -z "$$HUGGINGFACEHUB_API_TOKEN" ]; then \
 			echo "Error: HUGGINGFACEHUB_API_TOKEN is not set in the .env file."; \
+			exit 1; \
+		fi; \
+		if [ -z "$$API_USERNAME" ]; then \
+			echo "Error: API_USERNAME is not set in the .env file."; \
+			exit 1; \
+		fi; \
+		if [ -z "$$API_PASSWORD" ]; then \
+			echo "Error: API_PASSWORD is not set in the .env file."; \
 			exit 1; \
 		fi; \
 	else \

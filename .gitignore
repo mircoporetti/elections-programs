@@ -4,3 +4,4 @@
 /venv/
 /faiss/
 /.env
+/http-client/http-client.private.env.json
