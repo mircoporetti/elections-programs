@@ -18,6 +18,17 @@ spec:
       containers:
         - name: elections-programs-container
           image: $CI_REGISTRY/gitlab-mirco/elections-programs:$CI_COMMIT_SHA
+          env:
+          - name: API_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: basic-auth-credentials
+                key: username
+          - name: API_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: basic-auth-credentials
+                key: password
           ports:
             - containerPort: 8000
       imagePullSecrets:
