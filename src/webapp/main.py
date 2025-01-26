@@ -2,10 +2,10 @@ import logging
 
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
+
 from chat import ai_assistant
 from store import vector_store
 from .auth import security, basic_auth
-from filelock import FileLock
 
 app = FastAPI(dependencies=[Depends(security)])
 
@@ -14,11 +14,7 @@ logger = logging.getLogger("uvicorn")
 
 @app.on_event("startup")
 async def load_resources():
-    lock = FileLock("./faiss/init.lock", timeout=120)
-    with lock:
-        logger.info("Initializing Vector Store...")
-        vector_store.init_vector_store()
-        logger.info("Vector Store has been initialized.")
+    vector_store.init_vector_store()
 
 
 class Prompt(BaseModel):

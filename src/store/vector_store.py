@@ -1,3 +1,4 @@
+from filelock import FileLock
 import logging
 import os
 
@@ -19,13 +20,18 @@ def faiss_folder_is_empty_except_lockfile():
 
 def init_vector_store():
     global vector_store
-    if faiss_folder_is_empty_except_lockfile():
-        logger.info("Loading existing Vector Store...")
-        vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
-    else:
-        logger.info("Creating new Vector Store from parties' programs docs...")
-        docs_chunks = chunk_manifests_pdfs()
-        vector_store = build_from_documents(docs_chunks)
+    lock = FileLock("./faiss/init.lock", timeout=120)
+    with lock:
+        logger.info("Initializing Vector Store...")
+        if faiss_folder_is_empty_except_lockfile():
+            logger.info("Loading existing Vector Store...")
+            vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
+        else:
+            logger.info("Creating new Vector Store from parties' programs docs...")
+            docs_chunks = chunk_manifests_pdfs()
+            vector_store = build_from_documents(docs_chunks)
+        logger.info("Vector Store has been initialized.")
+
 
 
 def get_store_as_retriever():
