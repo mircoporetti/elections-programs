@@ -13,9 +13,13 @@ vector_store: VectorStore
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
+def faiss_folder_is_empty_except_lockfile():
+    return os.path.exists("faiss") and any(file for file in os.listdir("faiss") if file not in "init.lock")
+
+
 def init_vector_store():
     global vector_store
-    if os.path.exists("faiss") and os.listdir("faiss"):
+    if faiss_folder_is_empty_except_lockfile():
         logger.info("Loading existing Vector Store...")
         vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
     else:

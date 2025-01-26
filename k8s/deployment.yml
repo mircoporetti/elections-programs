@@ -29,7 +29,14 @@ spec:
               secretKeyRef:
                 name: basic-auth-credentials
                 key: password
+          volumeMounts:
+            - name: faiss-storage
+              mountPath: /app/faiss
           ports:
             - containerPort: 8000
+      volumes:
+        - name: faiss-storage
+          persistentVolumeClaim:
+            claimName: faiss-pvc
       imagePullSecrets:
         - name: gitlab-registry-secret

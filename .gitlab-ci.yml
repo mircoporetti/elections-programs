@@ -30,6 +30,8 @@ deploy:
     - sed -i "s|\$CI_REGISTRY|$CI_REGISTRY|g" k8s/deployment.yml
     - sed -i "s|\$CI_COMMIT_SHA|$CI_COMMIT_SHA|g" k8s/deployment.yml
     - kubectl get ns
+    - kubectl -n elections-programs apply -f k8s/persistent_volume.yml || echo "PV already exists"
+    - kubectl -n elections-programs apply -f k8s/persistent_volume_claim.yml || echo "PVC already exists"
     - kubectl -n elections-programs apply -f k8s/deployment.yml
     - kubectl -n elections-programs apply -f k8s/service.yml
   tags:
