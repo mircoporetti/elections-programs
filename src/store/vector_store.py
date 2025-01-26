@@ -18,7 +18,7 @@ def faiss_folder_is_empty_except_lockfile():
     return os.path.exists("faiss") and any(file for file in os.listdir("faiss") if file not in "init.lock")
 
 
-def init_vector_store():
+def init():
     global vector_store
     lock = FileLock("./faiss/init.lock", timeout=120)
     with lock:
@@ -32,6 +32,16 @@ def init_vector_store():
             vector_store = build_from_documents(docs_chunks)
         logger.info("Vector Store has been initialized.")
 
+
+def clean():
+    lock = FileLock("./faiss/init.lock", timeout=120)
+    with lock:
+        if faiss_folder_is_empty_except_lockfile():
+            logger.info("Nothing to clean...")
+        else:
+            logger.info("Cleaning up Vector Store...")
+            vector_store.delete()
+        logger.info("Vector Store cleanup successful.")
 
 
 def get_store_as_retriever():

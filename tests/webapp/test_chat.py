@@ -17,7 +17,7 @@ basic_auth = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("
 
 @pytest.fixture(scope="session", autouse=True)
 def init_vector_store():
-    vector_store.init_vector_store()
+    vector_store.init()
     print("Vector store initialized")
 
 
