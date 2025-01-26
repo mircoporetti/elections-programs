@@ -1,0 +1,8 @@
+# Test your FastAPI endpoints
+
+POST {{host}}/api/store/clean
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic {{basic_auth}}
+
+###

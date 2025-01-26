@@ -15,7 +15,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
 def faiss_folder_is_empty_except_lockfile():
-    return os.path.exists("faiss") and any(file for file in os.listdir("faiss") if file not in "init.lock")
+    return os.path.exists("faiss") and not any(file for file in os.listdir("faiss") if file not in "init.lock")
 
 
 def init():
@@ -24,12 +24,12 @@ def init():
     with lock:
         logger.info("Initializing Vector Store...")
         if faiss_folder_is_empty_except_lockfile():
-            logger.info("Loading existing Vector Store...")
-            vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
-        else:
             logger.info("Creating new Vector Store from parties' programs docs...")
             docs_chunks = chunk_manifests_pdfs()
             vector_store = build_from_documents(docs_chunks)
+        else:
+            logger.info("Loading existing Vector Store...")
+            vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
         logger.info("Vector Store has been initialized.")
 
 
@@ -40,7 +40,10 @@ def clean():
             logger.info("Nothing to clean...")
         else:
             logger.info("Cleaning up Vector Store...")
-            vector_store.delete()
+            for filename in os.listdir("faiss"):
+                file_path = os.path.join("faiss", filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
         logger.info("Vector Store cleanup successful.")
 
 
