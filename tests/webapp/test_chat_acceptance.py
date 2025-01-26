@@ -41,4 +41,33 @@ def tests_chat_returns_most_pertinent_chunks():
 
     response_json = response.json()
     assert 'chunks' in response_json
-    assert len(response_json['chunks']) > 0
+    assert len(response_json['chunks']) == 4
+
+
+def tests_chat_returns_only_CDU_chunks():
+    response = client.post("/api/chat/retrieve", json={"query": "What CDU wants to do for economy?"},
+                           headers={"Authorization": f"Basic {basic_auth}"})
+
+    assert response.status_code == 200
+
+    response_json = response.json()
+
+    chunks = response_json['chunks']
+    assert len(chunks) > 0
+    assert all('CDU' in chunk['text']['metadata']['source'] for chunk in chunks)
+
+
+def tests_chat_doesnt_support_party():
+    question = "What do my favorite party wants to do for economy?"
+    response = client.post("/api/chat/retrieve", json={"query": question},
+                           headers={"Authorization": f"Basic {basic_auth}"})
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+
+    error_detail = response_json['detail']
+    assert error_detail == (f"The provided question '{question}' does not "
+                            "reference any supported political party. Please include one of the following: SPD, CDU")
+
+

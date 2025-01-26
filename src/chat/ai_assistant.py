@@ -1,6 +1,7 @@
 import os
 
-from store.vector_store import similarity_search
+from chat.party import Party, PartyNotFoundError
+from store.vector_store import similarity_search_for
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain.chains import RetrievalQA
 
@@ -17,15 +18,20 @@ def answer(question: str):
     qa_chain = RetrievalQA.from_chain_type(
         llm=generative_model,
         chain_type="stuff",
-        retriever=vector_store.get_store_as_retriever()
+        retriever=vector_store.get_store_as_retriever_for(extract_party_from(question))
     )
 
     return qa_chain.invoke(question)["result"]
 
 
-def answer_with_most_pertinent_chunks(query: str):
-    best_chunks = similarity_search(query)
-
-    print(best_chunks)
+def answer_with_most_pertinent_chunks(question: str):
+    best_chunks = similarity_search_for(extract_party_from(question), question)
 
     return best_chunks
+
+
+def extract_party_from(question):
+    for party in Party:
+        if party.value.lower() in question.lower():
+            return party
+    raise PartyNotFoundError(question)

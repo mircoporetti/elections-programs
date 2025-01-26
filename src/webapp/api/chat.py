@@ -18,6 +18,6 @@ async def answer_question(prompt: Prompt, credentials=Depends(basic_auth)):
 
 
 @router.post("/retrieve")
-async def retrieve_most_pertinent(prompt: Prompt, credentials=Depends(basic_auth)):
+async def retrieve_most_pertinent_chunks(prompt: Prompt, credentials=Depends(basic_auth)):
     result = ai_assistant.answer_with_most_pertinent_chunks(prompt.query)
     return {"chunks": result}

@@ -6,7 +6,7 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "And what can you tell me about CDU ideas for private investors?"
+  "query": "Can you tell me what SPD thinks about the fact that Germany is not growing anymore??"
 }
 
 ###
@@ -17,7 +17,7 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "And what can you tell me about CDU ideas for private investors?"
+  "query": "Can you tell me what SPD thinks about the fact that Germany is not growing anymore??"
 }
 
 ###
