@@ -4,6 +4,7 @@ from enum import Enum
 class Party(Enum):
     SPD = "SPD"
     CDU = "CDU"
+    AFD = "AFD"
 
 
 class PartyNotFoundError(Exception):
