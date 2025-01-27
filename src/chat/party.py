@@ -7,6 +7,7 @@ class Party(Enum):
     AFD = "AFD"
     FDP = "FDP"
     DL = "DL"
+    DGR = "DGR"
 
 
 class PartyNotFoundError(Exception):
