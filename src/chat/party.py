@@ -8,6 +8,7 @@ class Party(Enum):
     FDP = "FDP"
     DL = "DL"
     DGR = "DGR"
+    BSW = "BSW"
 
 
 class PartyNotFoundError(Exception):
