@@ -6,6 +6,7 @@ class Party(Enum):
     CDU = "CDU"
     AFD = "AFD"
     FDP = "FDP"
+    DL = "DL"
 
 
 class PartyNotFoundError(Exception):

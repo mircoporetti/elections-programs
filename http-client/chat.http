@@ -17,7 +17,7 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "Can you tell me what FDP thinks about immigration??"
+  "query": "Can you tell me what DL thinks about immigration??"
 }
 
 ###
