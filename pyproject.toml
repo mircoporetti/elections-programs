@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "elections-programs"
 version = "0.0.1"
-packages = [{ include = "webapp", from = "src" }]
-
+packages = [
+    { include = "webapp", from = "src"},
+    { include = "src/" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
