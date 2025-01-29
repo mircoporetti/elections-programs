@@ -1,9 +1,11 @@
+import shutil
+
 from filelock import FileLock
 import logging
 import os
 
 from langchain_community.vectorstores import FAISS, VectorStore
-from langchain_community.document_loaders import PyPDFDirectoryLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -12,8 +14,9 @@ from chat.party import Party
 logger = logging.getLogger("uvicorn")
 
 PROGRAMS_PATH = "resources/manifests/"
-vector_store: VectorStore
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+faiss_vector_indexes = {}
 
 
 def faiss_folder_is_empty_except_lockfile():
@@ -21,55 +24,57 @@ def faiss_folder_is_empty_except_lockfile():
 
 
 def init():
-    global vector_store
+    global faiss_vector_indexes
     lock = FileLock("./faiss/init.lock", timeout=120)
-    with lock:
+    with (lock):
         logger.info("Initializing Vector Store...")
         if faiss_folder_is_empty_except_lockfile():
             logger.info("Creating new Vector Store from parties' programs docs...")
-            docs_chunks = chunk_manifests_pdfs()
-            vector_store = build_from_documents(docs_chunks)
+            for doc in os.listdir(f"./{PROGRAMS_PATH}"):
+                party_name = os.path.splitext(doc)[0]
+                logger.info(f"Creating FAISS index for party: {party_name}")
+                loader = PyPDFLoader(f"./{PROGRAMS_PATH}/{doc}")
+                pages_to_be_chunked = loader.load()
+                splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+                chunks = splitter.split_documents(pages_to_be_chunked)
+                logger.info(f"Chunks: {len(chunks)}")
+                store = FAISS.from_documents(chunks, embeddings)
+                store.save_local(f"faiss/{party_name}")
+                faiss_vector_indexes[party_name] = store
         else:
-            logger.info("Loading existing Vector Store...")
-            vector_store = FAISS.load_local("faiss", embeddings, allow_dangerous_deserialization=True)
-        logger.info("Vector Store has been initialized.")
-
-
-def build_from_documents(docs_chunks):
-    store = FAISS.from_documents(docs_chunks, embeddings)
-    store.save_local("faiss")
-    return store
-
-
-def chunk_manifests_pdfs():
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    loader = PyPDFDirectoryLoader(f"./{PROGRAMS_PATH}")
-    docs_to_be_chunked = loader.load()
-    return splitter.split_documents(docs_to_be_chunked)
+            logger.info("Loading existing Vector Store indexes...")
+            for party_store_dir in os.listdir("./faiss"):
+                if "." not in party_store_dir:
+                    party_name = party_store_dir
+                    logger.info(f"Loading FAISS index for party: {party_name}")
+                    faiss_vector_indexes[party_name] = FAISS.load_local(
+                        f"faiss/{party_name}", embeddings,
+                        allow_dangerous_deserialization=True)
+            logger.info("Vector Store has been initialized.")
 
 
 def clean():
     lock = FileLock("./faiss/init.lock", timeout=120)
     with lock:
-        if faiss_folder_is_empty_except_lockfile():
-            logger.info("Nothing to clean...")
-        else:
-            logger.info("Cleaning up Vector Store...")
-            for filename in os.listdir("faiss"):
-                file_path = os.path.join("faiss", filename)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
+        logger.info("Cleaning up Vector Store...")
+        for filename in os.listdir('faiss'):
+            file_path = os.path.join('faiss', filename)
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+            elif os.path.isfile(file_path):
+                os.remove(file_path)
         logger.info("Vector Store cleanup successful.")
 
 
 def get_store_as_retriever_for(party: Party):
-    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"}
-    return vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 3, "filter": party_filter})
+    return faiss_vector_indexes[party.name].as_retriever(search_type="similarity",
+                                                         search_kwargs={"k": 3})
 
 
 def similarity_search_for(party: Party, query: str):
-    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"}
-    most_similar_results = vector_store.similarity_search_with_score(query, k=4, filter=party_filter)
+    store: VectorStore = faiss_vector_indexes[party.name]
+    most_similar_results = store.similarity_search_with_score(query, k=4)
+    print(most_similar_results)
     return [
         {
             "text": result[0],

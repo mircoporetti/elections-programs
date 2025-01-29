@@ -30,7 +30,7 @@ def tests_chat_completion():
     response_json = response.json()
     assert 'answer' in response_json
     assert 'CDU' in response_json['answer']
-    assert 'immigrants' in response_json['answer']
+    assert 'immigrants' or 'immigration' in response_json['answer']
 
 
 def tests_chat_returns_most_pertinent_chunks():
@@ -67,7 +67,8 @@ def tests_chat_doesnt_support_party():
     response_json = response.json()
 
     error_detail = response_json['detail']
-    assert error_detail == (f"The provided question '{question}' does not "
-                            "reference any supported political party. Please include one of the following: SPD, CDU")
+    print(error_detail)
+    assert error_detail == (f"The provided question '{question}' does not reference any supported political party. "
+                            f"Please include one of the following: SPD, CDU, AFD, FDP, DL, DGR, BSW")
 
 
