@@ -42,7 +42,7 @@ def build_from_documents(docs_chunks):
 
 
 def chunk_manifests_pdfs():
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=2200, chunk_overlap=200)
     loader = PyPDFDirectoryLoader(f"./{PROGRAMS_PATH}")
     docs_to_be_chunked = loader.load()
     return splitter.split_documents(docs_to_be_chunked)
@@ -64,7 +64,7 @@ def clean():
 
 def get_store_as_retriever_for(party: Party):
     party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"}
-    return vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 3, "filter": party_filter})
+    return vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4, "filter": party_filter})
 
 
 def similarity_search_for(party: Party, query: str):

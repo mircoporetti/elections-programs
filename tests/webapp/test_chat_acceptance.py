@@ -67,7 +67,9 @@ def tests_chat_doesnt_support_party():
     response_json = response.json()
 
     error_detail = response_json['detail']
+    print(error_detail)
     assert error_detail == (f"The provided question '{question}' does not "
-                            "reference any supported political party. Please include one of the following: SPD, CDU")
+                            "reference any supported political party. Please include one of the following: SPD, CDU, "
+                            "AFD, FDP, DL, DGR, BSW")
 
 
