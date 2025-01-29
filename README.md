@@ -20,7 +20,7 @@ Access Token token value.
 
     ```bash
     poetry install
-    HUGGINGFACEHUB_API_TOKEN=your_token_value poetry run uvicorn src.webapp.main:app --reload
+    HUGGINGFACEHUB_API_TOKEN=your_token API_USERNAME=elections-programs API_PASSWORD=an_api_password poetry run uvicorn src.webapp.main:app --reload
     ```
 
 ### Run the tests with
