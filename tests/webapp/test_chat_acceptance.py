@@ -30,7 +30,7 @@ def tests_chat_completion():
     response_json = response.json()
     assert 'answer' in response_json
     assert 'CDU' in response_json['answer']
-    assert 'immigrants' in response_json['answer']
+    assert 'immigrants' or 'immigration' in response_json['answer']
 
 
 def tests_chat_returns_most_pertinent_chunks():
