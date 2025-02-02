@@ -1,4 +1,5 @@
 import os
+import re
 
 from chat.party import Party
 from store.vector_store import similarity_search_for
@@ -15,7 +16,6 @@ if not huggingface_token:
 
 system_prompt = (
     "You are a concise AI assistant, expert in politics."
-    "Provide direct answers without prefixes like 'AI:', 'Assistant:', or translations."
     "Respond in plain text, with no extra formatting."
     "Use the given context to answer the question."
     "If you are unsure about the answer, say you don't know."
@@ -37,7 +37,8 @@ def answer(question: str):
     retriever = vector_store.get_store_as_retriever_for(Party.get_from(question))
     chain = create_retrieval_chain(retriever, question_answer_chain)
 
-    return chain.invoke({"input": question})["answer"].strip()
+    strip = re.sub(r'AI:\s*', '', chain.invoke({"input": question})["answer"].strip())
+    return strip
 
 
 def answer_with_most_pertinent_chunks(question: str):
