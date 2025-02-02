@@ -1,6 +1,6 @@
 import os
 
-from chat.party import Party, PartyNotFoundError
+from chat.party import Party
 from store.vector_store import similarity_search_for
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain.chains import create_retrieval_chain
@@ -28,25 +28,20 @@ prompt = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
+
 generative_model = HuggingFaceEndpoint(repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1", temperature=0.7)
 
 
 def answer(question: str):
     question_answer_chain = create_stuff_documents_chain(generative_model, prompt)
-    retriever = vector_store.get_store_as_retriever_for(extract_party_from(question))
+    retriever = vector_store.get_store_as_retriever_for(Party.get_from(question))
     chain = create_retrieval_chain(retriever, question_answer_chain)
 
     return chain.invoke({"input": question})["answer"].strip()
 
 
 def answer_with_most_pertinent_chunks(question: str):
-    best_chunks = similarity_search_for(extract_party_from(question), question)
+    best_chunks = similarity_search_for(Party.get_from(question), question)
 
     return best_chunks
 
-
-def extract_party_from(question):
-    for party in Party:
-        if party.value.lower() in question.lower():
-            return party
-    raise PartyNotFoundError(question)
