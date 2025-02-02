@@ -1,5 +1,6 @@
 import os
 import re
+from typing import List, Dict
 
 from chat.party import Party
 from store.vector_store import similarity_search_for
@@ -32,17 +33,19 @@ prompt = ChatPromptTemplate.from_messages(
 generative_model = HuggingFaceEndpoint(repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1", temperature=0.7)
 
 
-def answer(question: str):
+def answer(question: str, history: List[Dict[str, str]]):
     question_answer_chain = create_stuff_documents_chain(generative_model, prompt)
-    retriever = vector_store.get_store_as_retriever_for(Party.get_from(question))
+    party = Party.get_from_history(history)
+    retriever = vector_store.get_store_as_retriever_for(party)
     chain = create_retrieval_chain(retriever, question_answer_chain)
 
-    strip = re.sub(r'AI:\s*', '', chain.invoke({"input": question})["answer"].strip())
-    return strip
+    print(party)
+
+    llm_answer = chain.invoke({"input": f"Party: {party} - {question}"})["answer"].strip()
+    return re.sub(r'(AI|Assistant|Bot|System):\s*', '', llm_answer, flags=re.IGNORECASE)
 
 
 def answer_with_most_pertinent_chunks(question: str):
-    best_chunks = similarity_search_for(Party.get_from(question), question)
+    best_chunks = similarity_search_for(Party.get_from_message(question), question)
 
     return best_chunks
-

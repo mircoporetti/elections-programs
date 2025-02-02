@@ -6,7 +6,13 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "Can you tell me what AFD thinks about immigration??"
+  "history": [
+    {
+      "role": "You",
+      "content": "What CDU wants to do for economy?"
+    }
+  ],
+  "query": "What CDU wants to do for economy?"
 }
 
 ###
@@ -17,7 +23,8 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "What CDU wants to do for economy?"
+  "query": "What CDU wants to do for economy?",
+   "history": []
 }
 
 ###
