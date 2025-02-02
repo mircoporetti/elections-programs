@@ -63,12 +63,12 @@ def clean():
 
 
 def get_store_as_retriever_for(party: Party):
-    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"}
+    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"} if party else {}
     return vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 4, "filter": party_filter})
 
 
 def similarity_search_for(party: Party, query: str):
-    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"}
+    party_filter = {"source": f"{PROGRAMS_PATH}{party.name}.pdf"} if party else {}
     most_similar_results = vector_store.similarity_search_with_score(query, k=4, filter=party_filter)
     return [
         {
