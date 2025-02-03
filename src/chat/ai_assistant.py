@@ -17,11 +17,13 @@ if not huggingface_token:
     raise ValueError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
 
 system_prompt = (
-    "You are a concise AI assistant, expert in politics. "
-    "Respond in plain text with no formatting. "
-    "Use this context: {context} "
-    "If the context is empty, try to understand based on the old messages. "
-    "If unsure, say you don't know. Keep responses to max 3 sentences."
+    "You are a concise AI assistant, expert in politics."
+    "Respond in plain text without repeating the same sentence."
+    "Use the given context to answer the question."
+    "If you are unsure about the answer, say you don't know."
+    "Limit your response to max three concise sentences."
+    "The party object of the question is: {party}."
+    "Context: {context}"
 )
 
 prompt_template = ChatPromptTemplate.from_messages([
@@ -36,7 +38,7 @@ generative_model = HuggingFaceEndpoint(repo_id="mistralai/Mixtral-8x7B-Instruct-
 def answer(question: str, history: List[Dict[str, str]]):
     converted_history = []
     for msg in history:
-        if msg["role"] == "AI":
+        if msg["role"].lower() == "ai":
             converted_history.append(AIMessage(content=msg["content"]))
         else:
             converted_history.append(HumanMessage(content=msg["content"]))
