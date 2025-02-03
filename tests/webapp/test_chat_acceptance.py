@@ -64,6 +64,7 @@ def tests_chat_party_inferred_from_history():
     assert 'CDU' in response_json['answer']
     assert 'immigrants' or 'immigration' in response_json['answer']
 
+
 def tests_chat_doesnt_support_party():
     question = "What do my favorite party wants to do for economy?"
     response = client.post("/api/chat/completion", json={
@@ -85,6 +86,34 @@ def tests_chat_doesnt_support_party():
     print(error_detail)
     assert error_detail == ("It was not possible to infer any supported political party from chat history."
                             " Please include one of the following: SPD, CDU, AFD, FDP, DL, DGR, BSW")
+
+
+def tests_chatbot_understand_old_questions():
+    question = "What did I ask you in the previous question?"
+    response = client.post("/api/chat/completion", json={
+        "history": [
+            {
+                "role": "You",
+                "content": "What CDU wants to do for economy?"
+            },
+            {
+                "role": "AI",
+                "content": "CDU wants to actuate the Plan X"
+            },
+            {
+                "role": "You",
+                "content": question
+            }
+        ],
+        "query": question
+    },
+                           headers={"Authorization": f"Basic {basic_auth}"})
+
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert 'economy' in response_json['answer']
+
 
 def tests_chat_returns_most_pertinent_chunks():
     response = client.post("/api/chat/retrieve", json={
