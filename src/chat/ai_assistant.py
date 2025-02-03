@@ -31,7 +31,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-generative_model = HuggingFaceEndpoint(repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1", temperature=0.7)
+generative_model = HuggingFaceEndpoint(repo_id="mistralai/Mistral-7B-Instruct-v0.3", temperature=0.7)
 
 
 def answer(question: str, history: List[Dict[str, str]]):
