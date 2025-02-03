@@ -17,10 +17,11 @@ if not huggingface_token:
 
 system_prompt = (
     "You are a concise AI assistant, expert in politics."
-    "Respond in plain text, with no extra formatting."
+    "Respond in plain text without repeating the same sentence."
     "Use the given context to answer the question."
     "If you are unsure about the answer, say you don't know."
-    "Limit your response to three sentences."
+    "Limit your response to max three concise sentences."
+    "The party object of the question is: {party}."
     "Context: {context}"
 )
 prompt = ChatPromptTemplate.from_messages(
@@ -39,10 +40,8 @@ def answer(question: str, history: List[Dict[str, str]]):
     retriever = vector_store.get_store_as_retriever_for(party)
     chain = create_retrieval_chain(retriever, question_answer_chain)
 
-    print(party)
-
-    llm_answer = chain.invoke({"input": f"Party: {party} - {question}"})["answer"].strip()
-    return re.sub(r'(AI|Assistant|Bot|System):\s*', '', llm_answer, flags=re.IGNORECASE)
+    llm_answer = chain.invoke({"input": question, "party": party})["answer"].strip()
+    return re.sub(r'(AI|Assistant|Bot|System|Answer):\s*', '', llm_answer, flags=re.IGNORECASE)
 
 
 def answer_with_most_pertinent_chunks(question: str):
