@@ -31,7 +31,7 @@ def tests_chat_completion():
         ],
         "query": "What CDU wants to do for immigrants?"
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -55,7 +55,7 @@ def tests_chat_party_inferred_from_history():
         ],
         "query": "What CDU wants to do for immigrants?"
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -96,7 +96,7 @@ def tests_chat_returns_most_pertinent_chunks():
         ],
         "query": "What CDU wants to do for immigrants?"
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -114,7 +114,7 @@ def tests_chat_returns_only_cdu_chunks():
             }
         ],
         "query": "What CDU wants to do for economy?"},
-        headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -123,4 +123,3 @@ def tests_chat_returns_only_cdu_chunks():
     chunks = response_json['chunks']
     assert len(chunks) > 0
     assert all('CDU' in chunk['text']['metadata']['source'] for chunk in chunks)
-
