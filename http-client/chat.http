@@ -1,12 +1,44 @@
 # Test your FastAPI endpoints
 
+# Chat completion first message
 POST {{host}}/api/chat/completion
 Accept: application/json
 Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "Can you tell me what AFD thinks about immigration??"
+  "history": [
+    {
+      "role": "You",
+      "content": "What CDU wants to do for economy?"
+    }
+  ],
+  "query": "What CDU wants to do for economy?"
+}
+
+###
+# Chat completion with history
+POST {{host}}/api/chat/completion
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic {{basic_auth}}
+
+{
+  "history": [
+    {
+      "role": "You",
+      "content": "What CDU wants to do for economy?"
+    },
+    {
+      "role": "AI",
+      "content": "CDU supports a technology-open, low-emission economy.\n2. They aim to make Germany competitive by investing in climate technologies and digitalization.\n3. They are driving re-industrialization through digitalization and setting up a Federal Digital Ministry."
+    },
+    {
+      "role": "You",
+      "content": "What did I ask you in the previous question?"
+    }
+  ],
+  "query": "What did I ask you in the previous question?"
 }
 
 ###
@@ -17,7 +49,8 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "What CDU wants to do for economy?"
+  "query": "What CDU wants to do for economy?",
+  "history": []
 }
 
 ###
