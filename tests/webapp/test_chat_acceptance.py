@@ -29,9 +29,9 @@ def tests_chat_completion():
                 "content": "What CDU wants to do for immigrants?"
             }
         ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for immigrants?"
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -49,13 +49,17 @@ def tests_chat_party_inferred_from_history():
                 "content": "What CDU wants to do for economy?"
             },
             {
+                "role": "AI",
+                "content": "CDU wants to actuate the Plan X"
+            },
+            {
                 "role": "You",
                 "content": "What do they wants to do for immigrants?"
             }
         ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for immigrants?"
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -63,6 +67,7 @@ def tests_chat_party_inferred_from_history():
     assert 'answer' in response_json
     assert 'CDU' in response_json['answer']
     assert 'immigrants' or 'immigration' in response_json['answer']
+
 
 def tests_chat_doesnt_support_party():
     question = "What do my favorite party wants to do for economy?"
@@ -73,7 +78,7 @@ def tests_chat_doesnt_support_party():
                 "content": question
             }
         ],
-        "query": question
+        "question": question
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -86,17 +91,39 @@ def tests_chat_doesnt_support_party():
     assert error_detail == ("It was not possible to infer any supported political party from chat history."
                             " Please include one of the following: SPD, CDU, AFD, FDP, DL, DGR, BSW")
 
-def tests_chat_returns_most_pertinent_chunks():
-    response = client.post("/api/chat/retrieve", json={
+
+def tests_chatbot_understand_old_questions():
+    question = "What did I ask you in the previous question?"
+    response = client.post("/api/chat/completion", json={
         "history": [
             {
                 "role": "You",
-                "content": "What CDU wants to do for immigrants?"
+                "content": "What CDU wants to do for economy?"
+            },
+            {
+                "role": "AI",
+                "content": "CDU wants to actuate the Plan X"
+            },
+            {
+                "role": "You",
+                "content": question
             }
         ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": question
     },
-    headers={"Authorization": f"Basic {basic_auth}"})
+                           headers={"Authorization": f"Basic {basic_auth}"})
+
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert 'economy' or 'CDU' in response_json['answer']
+
+
+def tests_chat_returns_most_pertinent_chunks():
+    response = client.post("/api/chat/retrieve", json={
+        "question": "What CDU wants to do for immigrants?"
+    },
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -107,14 +134,8 @@ def tests_chat_returns_most_pertinent_chunks():
 
 def tests_chat_returns_only_cdu_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "history": [
-            {
-                "role": "You",
-                "content": "What CDU wants to do for economy?"
-            }
-        ],
-        "query": "What CDU wants to do for economy?"},
-        headers={"Authorization": f"Basic {basic_auth}"})
+        "question": "What CDU wants to do for economy?"},
+                           headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
@@ -123,4 +144,3 @@ def tests_chat_returns_only_cdu_chunks():
     chunks = response_json['chunks']
     assert len(chunks) > 0
     assert all('CDU' in chunk['text']['metadata']['source'] for chunk in chunks)
-

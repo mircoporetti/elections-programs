@@ -13,7 +13,6 @@ if not username or not password:
 
 def basic_auth(credentials: HTTPBasicCredentials = Depends(security)):
     if credentials.username == username and credentials.password == password:
-        print("User Validated")
         return True
     else:
         raise HTTPException(
