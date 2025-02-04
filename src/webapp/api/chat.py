@@ -9,17 +9,21 @@ from ..auth import basic_auth
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 
-class Question(BaseModel):
+class CompletionRequest(BaseModel):
     history: List
-    query: str
+    question: str
+
+
+class ChunksRetrievalRequest(BaseModel):
+    question: str
 
 @router.post("/completion")
-async def answer_question(prompt: Question, credentials=Depends(basic_auth)):
-    result = ai_assistant.answer(prompt.query, prompt.history)
+async def answer_question(request: CompletionRequest, credentials=Depends(basic_auth)):
+    result = ai_assistant.answer(request.question, request.history)
     return {"answer": result}
 
 
 @router.post("/retrieve")
-async def retrieve_most_pertinent_chunks(prompt: Question, credentials=Depends(basic_auth)):
-    result = ai_assistant.answer_with_most_pertinent_chunks(prompt.query)
+async def retrieve_most_pertinent_chunks(request: ChunksRetrievalRequest, credentials=Depends(basic_auth)):
+    result = ai_assistant.answer_with_most_pertinent_chunks(request.question)
     return {"chunks": result}

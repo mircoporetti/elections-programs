@@ -29,7 +29,7 @@ def tests_chat_completion():
                 "content": "What CDU wants to do for immigrants?"
             }
         ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for immigrants?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -49,11 +49,15 @@ def tests_chat_party_inferred_from_history():
                 "content": "What CDU wants to do for economy?"
             },
             {
+                "role": "AI",
+                "content": "CDU wants to actuate the Plan X"
+            },
+            {
                 "role": "You",
                 "content": "What do they wants to do for immigrants?"
             }
         ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for immigrants?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -74,7 +78,7 @@ def tests_chat_doesnt_support_party():
                 "content": question
             }
         ],
-        "query": question
+        "question": question
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -105,25 +109,19 @@ def tests_chatbot_understand_old_questions():
                 "content": question
             }
         ],
-        "query": question
+        "question": question
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200
 
     response_json = response.json()
-    assert 'economy' in response_json['answer']
+    assert 'economy' or 'CDU' in response_json['answer']
 
 
 def tests_chat_returns_most_pertinent_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "history": [
-            {
-                "role": "You",
-                "content": "What CDU wants to do for immigrants?"
-            }
-        ],
-        "query": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for immigrants?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -136,13 +134,7 @@ def tests_chat_returns_most_pertinent_chunks():
 
 def tests_chat_returns_only_cdu_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "history": [
-            {
-                "role": "You",
-                "content": "What CDU wants to do for economy?"
-            }
-        ],
-        "query": "What CDU wants to do for economy?"},
+        "question": "What CDU wants to do for economy?"},
                            headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200

@@ -13,10 +13,11 @@ Authorization: Basic {{basic_auth}}
       "content": "What CDU wants to do for economy?"
     }
   ],
-  "query": "What CDU wants to do for economy?"
+  "question": "What CDU wants to do for economy?"
 }
 
 ###
+
 # Chat completion with history
 POST {{host}}/api/chat/completion
 Accept: application/json
@@ -38,19 +39,18 @@ Authorization: Basic {{basic_auth}}
       "content": "What did I ask you in the previous question?"
     }
   ],
-  "query": "What did I ask you in the previous question?"
+  "question": "What did I ask you in the previous question?"
 }
 
 ###
-
+# Most relevant chunks retrieval
 POST {{host}}/api/chat/retrieve
 Accept: application/json
 Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "query": "What CDU wants to do for economy?",
-  "history": []
+  "question": "What AFD wants to do for economy?"
 }
 
 ###
