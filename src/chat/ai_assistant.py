@@ -37,7 +37,7 @@ def answer(question: str, history: List[Dict[str, str]]):
     context = "\n".join([doc.page_content for doc in context_docs])
 
     conversation = [SystemMessage(content=system_prompt.format(context=context, party=party.name))]
-    for message in history[-3:]:
+    for message in history[-5:]:
         if message["role"].lower() != "ai":
             conversation.append(HumanMessage(content=message["content"]))
         else:
