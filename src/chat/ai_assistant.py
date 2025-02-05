@@ -1,16 +1,15 @@
 import os
 from typing import List, Dict
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langchain_huggingface import ChatHuggingFace
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_aws import ChatBedrock
 from chat.party import Party
 from store import vector_store
 from store.vector_store import similarity_search_for
 
-
-huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-if not huggingface_token:
-    raise ValueError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
+aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
+aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+if not aws_access_key_id or not aws_secret_access_key:
+    raise ValueError("AWS ACCESS KEYS environment variables are not set.")
 
 system_prompt = (
     "You are a concise AI assistant, expert in politics. "
@@ -21,13 +20,9 @@ system_prompt = (
     "Context: {context}"
 )
 
-llm_endpoint = HuggingFaceEndpoint(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.3",
-    temperature=0.7,
-    max_new_tokens=256,
-    stop_sequences=["</s>", "Human:", "AI:"],
-)
-llm = ChatHuggingFace(llm=llm_endpoint)
+
+llm = ChatBedrock(model_id='mistral.mistral-7b-instruct-v0:2', region_name='us-west-2', aws_access_key_id=aws_access_key_id,
+                  aws_secret_access_key=aws_secret_access_key)
 
 
 def answer(question: str, history: List[Dict[str, str]]):

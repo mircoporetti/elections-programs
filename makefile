@@ -5,8 +5,12 @@ check_env:
 	@echo "Sourcing .env file..."
 	@if [ -f .env ]; then \
 		export $$(cat .env | xargs); \
-		if [ -z "$$HUGGINGFACEHUB_API_TOKEN" ]; then \
-			echo "Error: HUGGINGFACEHUB_API_TOKEN is not set in the .env file."; \
+		if [ -z "$$AWS_ACCESS_KEY_ID" ]; then \
+        			echo "Error: AWS_SECRET_ACCESS_KEY is not set in the .env file."; \
+        			exit 1; \
+        		fi; \
+		if [ -z "$$AWS_SECRET_ACCESS_KEY" ]; then \
+			echo "Error: AWS_SECRET_ACCESS_KEY is not set in the .env file."; \
 			exit 1; \
 		fi; \
 		if [ -z "$$API_USERNAME" ]; then \
