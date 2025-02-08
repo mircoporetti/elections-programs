@@ -7,7 +7,7 @@ class Party(Enum):
     AFD = "AFD"
     FDP = "FDP"
     DL = "DL"
-    DGR = "DGR"
+    DG = "DG"
     BSW = "BSW"
 
     @staticmethod

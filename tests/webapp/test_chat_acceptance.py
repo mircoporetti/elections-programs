@@ -89,7 +89,7 @@ def tests_chat_doesnt_support_party():
     error_detail = response_json['detail']
     print(error_detail)
     assert error_detail == ("It was not possible to infer any supported political party from chat history."
-                            " Please include one of the following: SPD, CDU, AFD, FDP, DL, DGR, BSW")
+                            " Please include one of the following: SPD, CDU, AFD, FDP, DL, DG, BSW")
 
 
 def tests_chatbot_understand_old_questions():
