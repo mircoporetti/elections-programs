@@ -33,7 +33,7 @@ class PartyNotFoundError(Exception):
     def __init__(self, question):
         supported_parties = ", ".join([party.name for party in Party])
         self.question = question
-        super().__init__(f"It was not possible to infer any supported political party from chat history. "
+        super().__init__(f"Oops! I did not understand which party your question is referring to. "
                          f"Please include one of the following: {supported_parties}")
 
 
