@@ -121,7 +121,7 @@ def tests_chatbot_understand_old_questions():
 
 def tests_chat_returns_most_pertinent_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "question": "What CDU wants to do for immigrants?"
+        "question": "What CDU wants to do for illegal immigration?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 

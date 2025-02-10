@@ -17,6 +17,7 @@ faiss-cpu = "1.9.0"
 pypdf = "5.1.0"
 sentencepiece = "^0.2.0"
 protobuf = "^5.29.3"
+lingua-language-detector = "2.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
