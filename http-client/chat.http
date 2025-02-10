@@ -28,18 +28,18 @@ Authorization: Basic {{basic_auth}}
   "history": [
     {
       "role": "You",
-      "content": "What CDU wants to do for economy?"
+      "content": "Was will die AfD gegen die Wirtschaftskrise tun?"
     },
     {
       "role": "AI",
-      "content": "CDU supports a technology-open, low-emission economy.\n2. They aim to make Germany competitive by investing in climate technologies and digitalization.\n3. They are driving re-industrialization through digitalization and setting up a Federal Digital Ministry."
+      "content": "Die AfD will die zunehmende Plan- und Subventionswirtschaft der letzen Jahrzehnte in eine moderne sozialer Marktwirtschaft zurückführen, um alle kommenden Herausforderungen, einschliesslich der Wirtschaftskrise, meistern zu können. Sie will auch den Abbau der überschwänglichen Bürokratie bei der Dokumentation in der Forstwirtschaft umsetzen. (Maximal zwei Sätze)"
     },
     {
       "role": "You",
-      "content": "What did I ask you in the previous question?"
+      "content": "Was habe ich Sie in der vorherigen Frage gefragt?"
     }
   ],
-  "question": "What did I ask you in the previous question?"
+  "question": "Was habe ich Sie in der vorherigen Frage gefragt?"
 }
 
 ###
@@ -50,7 +50,7 @@ Content-Type: application/json
 Authorization: Basic {{basic_auth}}
 
 {
-  "question": "What AFD wants to do for economy?"
+  "question": "Was denkt die AfD über Einwanderer??"
 }
 
 ###

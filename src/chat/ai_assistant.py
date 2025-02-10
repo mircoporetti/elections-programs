@@ -13,16 +13,17 @@ if not huggingface_token:
     raise ValueError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
 
 system_prompt = (
-    "You are a concise AI assistant, expert in politics. "
-    "Respond in plain text using a maximum of three concise sentences. "
-    "Use the provided context to answer the question accurately. "
-    "If you are unsure about the answer, say you don't know. "
-    "Party: {party}. "
-    "Context: {context}"
+    "Du bist ein präziser KI-Assistent, spezialisiert auf Politik. "
+    "Antworte in Klartext mit maximal drei knappen Sätzen. "
+    "Nutze den gegebenen Kontext, um die Frage genau zu beantworten. "
+    "Falls du die Antwort nicht kennst, sage, dass du es nicht weißt. "
+    "Beantworte diese Frage auf Deutsch. "
+    "Partei: {party}. "
+    "Kontext: {context}"
 )
 
 llm_endpoint = HuggingFaceEndpoint(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.3",
+    repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1",
     temperature=0.7,
     max_new_tokens=256,
     stop_sequences=["</s>", "Human:", "AI:"],

@@ -26,10 +26,10 @@ def tests_chat_completion():
         "history": [
             {
                 "role": "You",
-                "content": "What CDU wants to do for immigrants?"
+                "content": "Was will die CDU für Einwanderer tun?"
             }
         ],
-        "question": "What CDU wants to do for immigrants?"
+        "question": "Was will die CDU für Einwanderer tun?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -38,7 +38,7 @@ def tests_chat_completion():
     response_json = response.json()
     assert 'answer' in response_json
     assert 'CDU' in response_json['answer']
-    assert 'immigrants' or 'immigration' in response_json['answer']
+    assert 'Einwanderer' or 'Einwanderung' in response_json['answer']
 
 
 def tests_chat_party_inferred_from_history():
@@ -46,18 +46,18 @@ def tests_chat_party_inferred_from_history():
         "history": [
             {
                 "role": "You",
-                "content": "What CDU wants to do for economy?"
+                "content": "Was denkt die CDU über die Wirtschaft?"
             },
             {
                 "role": "AI",
-                "content": "CDU wants to actuate the Plan X"
+                "content": "CDU will Plan X umsetzen"
             },
             {
                 "role": "You",
-                "content": "What do they wants to do for immigrants?"
+                "content": "Was wollen sie für Einwanderer tun?"
             }
         ],
-        "question": "What CDU wants to do for immigrants?"
+        "question": "Was wollen sie für Einwanderer tun?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -66,11 +66,11 @@ def tests_chat_party_inferred_from_history():
     response_json = response.json()
     assert 'answer' in response_json
     assert 'CDU' in response_json['answer']
-    assert 'immigrants' or 'immigration' in response_json['answer']
+    assert 'Einwanderer' or 'Einwanderung' in response_json['answer']
 
 
 def tests_chat_doesnt_support_party():
-    question = "What do my favorite party wants to do for economy?"
+    question = "Was wollen sie für Einwanderer tun?"
     response = client.post("/api/chat/completion", json={
         "history": [
             {
@@ -88,21 +88,21 @@ def tests_chat_doesnt_support_party():
 
     error_detail = response_json['detail']
     print(error_detail)
-    assert error_detail == ("Oops! I did not understand which party your question is referring to."
-                            " Please include one of the following: SPD, CDU, AFD, FDP, DL, DG, BSW")
+    assert error_detail == ("Oops! Ich habe nicht verstanden, auf welche Partei sich deine Frage bezieht. "
+                            "Bitte nenne eine der folgenden: SPD, CDU, AFD, FDP, DL, DG, BSW")
 
 
 def tests_chatbot_understand_old_questions():
-    question = "What did I ask you in the previous question?"
+    question = "Was habe ich Sie in der vorherigen Frage gefragt?"
     response = client.post("/api/chat/completion", json={
         "history": [
             {
                 "role": "You",
-                "content": "What CDU wants to do for economy?"
+                "content": "Was will die CDU für die Wirtschaft tun?"
             },
             {
                 "role": "AI",
-                "content": "CDU wants to actuate the Plan X"
+                "content": "CDU will Plan X umsetzen"
             },
             {
                 "role": "You",
@@ -121,7 +121,7 @@ def tests_chatbot_understand_old_questions():
 
 def tests_chat_returns_most_pertinent_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "question": "What CDU wants to do for immigrants?"
+        "question": "Was will die CDU für Einwanderer tun?"
     },
                            headers={"Authorization": f"Basic {basic_auth}"})
 
@@ -134,7 +134,7 @@ def tests_chat_returns_most_pertinent_chunks():
 
 def tests_chat_returns_only_cdu_chunks():
     response = client.post("/api/chat/retrieve", json={
-        "question": "What CDU wants to do for economy?"},
+        "question": "Was will die CDU für die Wirtschaft tun?"},
                            headers={"Authorization": f"Basic {basic_auth}"})
 
     assert response.status_code == 200

@@ -33,8 +33,8 @@ class PartyNotFoundError(Exception):
     def __init__(self, question):
         supported_parties = ", ".join([party.name for party in Party])
         self.question = question
-        super().__init__(f"Oops! I did not understand which party your question is referring to. "
-                         f"Please include one of the following: {supported_parties}")
+        super().__init__(f"Oops! Ich habe nicht verstanden, auf welche Partei sich deine Frage bezieht. "
+                         f"Bitte nenne eine der folgenden: {supported_parties}")
 
 
 def extract_party_from(question):
