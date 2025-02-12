@@ -13,7 +13,7 @@ logger = logging.getLogger("uvicorn")
 
 PROGRAMS_PATH = "resources/manifests/"
 vector_store: VectorStore
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embeddings = HuggingFaceEmbeddings(model_name="distiluse-base-multilingual-cased-v2")
 
 
 def faiss_folder_is_empty_except_lockfile():

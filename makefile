@@ -5,7 +5,7 @@ check_env:
 	@echo "Sourcing .env file..."
 	@if [ -f .env ]; then \
 		export $$(cat .env | xargs); \
-		if [ -z "$$HUGGINGFACEHUB_API_TOKEN" ]; then \
+		if [ -z "$$OPENAI_API_KEY" ]; then \
 			echo "Error: HUGGINGFACEHUB_API_TOKEN is not set in the .env file."; \
 			exit 1; \
 		fi; \
