@@ -8,6 +8,7 @@ from .exception_handlers import party_not_found_exception_handler
 from .api.chat import router as chat_router
 from .api.store import router as store_router
 
+
 app = FastAPI(dependencies=[Depends(security)])
 
 allowed_origins = [

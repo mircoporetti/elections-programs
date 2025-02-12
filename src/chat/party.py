@@ -1,5 +1,9 @@
 from enum import Enum
 
+from lingua.lingua import Language
+
+from src.webapp.config import Config
+
 
 class Party(Enum):
     SPD = "SPD"
@@ -19,7 +23,6 @@ class Party(Enum):
                     return party
         raise PartyNotFoundError("No party found in chat history")
 
-
     @staticmethod
     def get_from_message(message):
         for party in Party:
@@ -28,13 +31,17 @@ class Party(Enum):
         return None
 
 
-
 class PartyNotFoundError(Exception):
     def __init__(self, question):
         supported_parties = ", ".join([party.name for party in Party])
         self.question = question
-        super().__init__(f"Oops! I did not understand which party your question is referring to. "
-                         f"Please include one of the following: {supported_parties}")
+        if Config.user_lang == Language.GERMAN:
+            message = f"Ups! Ich habe nicht verstanden, auf welche Partei sich Ihre Frage bezieht. " \
+                    f"Bitte geben Sie eine der folgenden Parteien an: {supported_parties}"
+        else:
+            message = f"Oops! I did not understand which party your question is referring to. " \
+                      f"Please include one of the following: {supported_parties}"
+        super().__init__(message)
 
 
 def extract_party_from(question):
