@@ -2,7 +2,7 @@ from enum import Enum
 
 from lingua.lingua import Language
 
-from src.webapp.config import Config
+from src.webapp.properties import Properties
 
 
 class Party(Enum):
@@ -35,7 +35,7 @@ class PartyNotFoundError(Exception):
     def __init__(self, question):
         supported_parties = ", ".join([party.name for party in Party])
         self.question = question
-        if Config.user_lang == Language.GERMAN:
+        if Properties.user_lang == Language.GERMAN:
             message = f"Ups! Ich habe nicht verstanden, auf welche Partei sich Ihre Frage bezieht. " \
                     f"Bitte geben Sie eine der folgenden Parteien an: {supported_parties}"
         else:

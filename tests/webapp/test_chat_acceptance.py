@@ -4,6 +4,7 @@ import os
 from fastapi.testclient import TestClient
 
 from src.webapp.main import app
+from src.webapp.properties import Properties
 import pytest
 
 from store import vector_store
@@ -117,6 +118,24 @@ def tests_chatbot_understand_old_questions():
 
     response_json = response.json()
     assert 'economy' or 'CDU' in response_json['answer']
+
+
+def tests_chatbot_received_too_many_daily_requests():
+
+    Properties.call_limit = 0
+    question = "What did I ask you in the previous question?"
+    response = client.post("/api/chat/completion", json={
+        "history": [
+            {
+                "role": "You",
+                "content": question
+            }
+        ],
+        "question": question
+    },
+                           headers={"Authorization": f"Basic {basic_auth}"})
+
+    assert response.status_code == 429
 
 
 def tests_chat_returns_most_pertinent_chunks():
