@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from logging.config import dictConfig
 
 from chat.party import PartyNotFoundError
 from store import vector_store
@@ -8,7 +9,9 @@ from .auth import security
 from .exception_handlers import party_not_found_exception_handler, daily_limit_exception_handler
 from .api.chat import router as chat_router
 from .api.store import router as store_router
+from .logging_config import log_config
 
+dictConfig(log_config)
 
 app = FastAPI(dependencies=[Depends(security)])
 
